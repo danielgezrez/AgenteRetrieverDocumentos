@@ -25,6 +25,10 @@ Principales decisiones de diseño:
 * La lógica se centraliza en una carpeta principal: configuración (config.py), ingesta de documentos (lector_documentos.py), almacenamiento vectorial (almacen_documentos.py) y el agente RAG (agente.py).
 * Se añade una carpeta plugins para funcionalidades adicionales del agente, facilitando la ampliación del sistema sin modificar el núcleo.
 
+Requisitos opcionales cumplidos:
+* Posibilidad de filtrar la búsqueda por los documentos concretos elegidos por el usuario.
+
+
 # **Instrucciones de instalación y ejecución**
 
 1. Crear archivo ".env" con ese nombre y que incluya:
@@ -39,7 +43,7 @@ OPENAI_EMBEDDING_MODEL=text-embedding-3-small    <- poner el modelo de embedding
 
 3. Ejecutar: streamlit run app.py
 
-# **Capturas de la aplicación en funcionamiento con al menos un documento de ejemplo.**
+# **Capturas de la aplicación en funcionamiento con al menos un documento de ejemplo**
 
 1. Interfaz en el inicio:
 ![img.png](img.png)
@@ -56,7 +60,11 @@ OPENAI_EMBEDDING_MODEL=text-embedding-3-small    <- poner el modelo de embedding
 5. Ejemplo que demuestra que el chat tiene memoria del contexto anterior:
 ![img_6.png](img_5.png)
 
-# **Qué mejorarías con más tiempo**
+6. Ampliación 1: Dos capturas sobre cómo el usuario puede filtrar los archivos cargados para que el modelo pueda contestar solo de los seleccionados.
+![img_7.png](img_7.png)
+![img_8.png](img_8.png)
+
+# **Qué mejoraría con más tiempo**
 - Mejora de la interfaz, incluyendo colocar la caja de prompts debajo del chat en vez de encima.
 - Que el historial del chat no se utilice dentro del prompt engineering, sino pasado como argumento al kernel. Esto ha sido intentado pero mostraba peores resultados que el prompt engineering, por lo que se optó por mantenerlo como parte del prompt.
 - Mejora de display de errores (error al enviar prompt sin haber subido archivos antes).

@@ -25,6 +25,7 @@ if "chat" not in st.session_state:
 # Titulo
 st.title("Agente Retriever de Documentos")
 
+
 # Ventana para arrastrar y subir archivos
 files = st.file_uploader(
     "Suba su archivo (PDFs o TXT)",
@@ -41,6 +42,19 @@ if files:
         st.success(f"Archivo almacenado: {file.name}")
 
 
+# Obtener documentos disponibles
+available_docs = sorted(
+    {meta["source"] for meta in st.session_state.store.metadata}
+)
+
+# Filtro de documentos para que el usuario seleccione los que quiere utilizar
+selected_docs = st.multiselect(
+    "Seleccione los documentos a utilizar:",
+    options=available_docs,
+    default=available_docs
+)
+
+
 # Ventana de entrada de chat con boton de enviar
 with st.form(key="chat_form", clear_on_submit=True):
     user_input = st.text_input("Pregunte:")  # Ventana para input de chat
@@ -49,7 +63,7 @@ with st.form(key="chat_form", clear_on_submit=True):
 
 # Si hay input del usuario y se ha pulsado enter
 if user_input and submitted:
-    results = st.session_state.store.search(user_input)  # devuelve fragmentos similares a la pregunta
+    results = st.session_state.store.search(user_input, selected_sources=selected_docs)  # devuelve fragmentos similares a la pregunta entre los documentos seleccionados
 
     response = asyncio.run(
         st.session_state.agent.ask(results, user_input)

@@ -46,6 +46,7 @@ class RAGAgent:
             Devuelve también las fuentes usadas.
             """
 
+
     # Funcion para construir el string del historial
     def format_history(self):
         history_text = ""
@@ -55,6 +56,7 @@ class RAGAgent:
             else:
                 history_text += f"Agente: {msg.content}\n"
         return history_text
+
 
     # Funcion principal
     async def ask(self, context_chunks, question):
