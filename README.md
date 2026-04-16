@@ -20,6 +20,7 @@ Carpeta plugins:
 Principales decisiones de diseño:
 * Diseño modular buscando separación de responsabilidades.
 * Streamlit para el front: Porque da resultados rápido y lo había utilizado en otras ocasiones.
+* FAISS para el vector store: Porque no requiere API y da buen rendimiento en local.
 * Se organiza el proyecto en un primer nivel simple (app.py, requirements.txt, .env) para facilitar ejecución, configuración y despliegue rápido.
 * La lógica se centraliza en una carpeta principal: configuración (config.py), ingesta de documentos (lector_documentos.py), almacenamiento vectorial (almacen_documentos.py) y el agente RAG (agente.py).
 * Se añade una carpeta plugins para funcionalidades adicionales del agente, facilitando la ampliación del sistema sin modificar el núcleo.
@@ -49,15 +50,16 @@ OPENAI_EMBEDDING_MODEL=text-embedding-3-small    <- poner el modelo de embedding
 3. Primera pregunta sobre el contexto del txt. Además de la respuesta, se imprime que la fuente utilizada para responder es la correcta.
 ![img_3.png](img_3.png)
 
-4. Segunda pregunta sobre el contexto del pdf también funciona. Por otro lado, si se pregunta por algo ajeno al contexto la respuesta impresa en pantalla es que no tiene información disponible en el contexto.
+4. Segunda pregunta sobre el contexto del pdf también funciona. Por otro lado, si se pregunta por algo ajeno al contexto la respuesta impresa en pantalla es que no tiene información disponible.
 ![img_4.png](img_4.png)
 
 5. Ejemplo que demuestra que el chat tiene memoria del contexto anterior:
-![img_5.png](img_5.png)
+![img_6.png](img_5.png)
 
 # **Qué mejorarías con más tiempo**
-- Mayor investigación para que el chat responda bien a preguntas que requieran utilizar información de varios de los documentos simultáneamente.
-- Mejora de la interfaz, incluyendo colocar la caja de texto debajo del chat.
-- Mejora de display de errores.
+- Mejora de la interfaz, incluyendo colocar la caja de prompts debajo del chat en vez de encima.
+- Que el historial del chat no se utilice dentro del prompt engineering, sino pasado como argumento al kernel. Esto ha sido intentado pero mostraba peores resultados que el prompt engineering, por lo que se optó por mantenerlo como parte del prompt.
+- Mejora de display de errores (error al enviar prompt sin haber subido archivos antes).
+- Mayor investigación para que el chat responda mejor a preguntas que requieran utilizar información de varios de los documentos simultáneamente.
 - Que no imprima un 'contexto' por pantalla si no ha sido capaz de utilizar ninguno y su respuesta es tan solo 'No tengo informacion disponible'.
 - Ampliación de plugins en summary_plugin.py.

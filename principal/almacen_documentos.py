@@ -9,7 +9,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 class VectorStore:
     def __init__(self):
         self.dimension = 1536  # dimension de los embeddings
-        self.index = faiss.IndexFlatL2(self.dimension)  # establece indice faiss como distancia euclidia
+        self.index = faiss.IndexFlatL2(self.dimension)  # establece indice faiss y metodo de busqueda como distancia euclidia
         self.texts = []  # almacena textos originales
         self.metadata = []  # almacena nombre del texto
 
@@ -27,13 +27,13 @@ class VectorStore:
 
     def add_documents(self, chunks, doc_name):
         """
-        Genera los embeddings del texto y guarda suindice faiss, el texto original, y el nombre del documento del que proviene.
+        Genera los embeddings del texto y guarda el embedding cal vector indices faiss, el texto original, y el nombre del documento del que proviene.
         :param chunks: fragmentos de texto
         :param doc_name: documento de origen
         """
         for chunk in chunks:
             emb = self.embed(chunk)  # funcion de generacion de embedding
-            self.index.add(np.array([emb]))  # adicion indice faiss
+            self.index.add(np.array([emb]))  # guarda embedding al vector indices faiss
             self.texts.append(chunk)  # guarda texto original del chunk
             self.metadata.append({"source": doc_name})  # guarda el nombre del documento del chunk
 
@@ -45,7 +45,7 @@ class VectorStore:
         :return: lista de diccionarios con textos mas similares a la peticion y su documento origen
         """
         q_emb = self.embed(query).reshape(1, -1)  # genera embedding de la peticion y lo normaliza
-        distances, indices = self.index.search(q_emb, k)  # busqueda del indice faiss, devuelve distancias L2 y posiciones de los vectores mas cercanos
+        distances, indices = self.index.search(q_emb, k)  # busqueda de embeddings mas cercanos a la peticion, devuelve sus distancias L2 e indice
 
         # recorrer indices obtenidos para recuperar el texto correspondiente y su documento origen
         results = []

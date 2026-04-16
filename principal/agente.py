@@ -28,20 +28,33 @@ class RAGAgent:
 
 
     # Funcion para construir una prompt final a partir del contexto y de la pregunta, asegurando la respuesta en base al contexto unicamente
-    def build_prompt(self, context, question):
+    def build_prompt(self, context, question, historial):
         return f"""
             Eres un asistente RAG.
             
-            Usa SOLO el contexto para responder.
+            Usa SOLO el contexto y los mensajes para responder.
             
             Contexto:
             {context}
+            
+            Mensajes:
+            {historial}
             
             Pregunta:
             {question}
             
             Devuelve también las fuentes usadas.
             """
+
+    # Funcion para construir el string del historial
+    def format_history(self):
+        history_text = ""
+        for msg in self.history:
+            if msg.role == "user":
+                history_text += f"Usuario: {msg.content}\n"
+            else:
+                history_text += f"Agente: {msg.content}\n"
+        return history_text
 
     # Funcion principal
     async def ask(self, context_chunks, question):
@@ -50,11 +63,9 @@ class RAGAgent:
             [f"[SOURCE: {c['source']}] {c['text']}" for c in context_chunks]
         )
 
-        # Prompt final a partir de la funcion definida justo encima
-        prompt = self.build_prompt(context_text, question)
-
-        # Añadir al historial la pregunta nueva
-        self.history.add_user_message(question)
+        # Prompt final a partir de las funciones definidas justo encima
+        historial_texto = self.format_history()
+        prompt = self.build_prompt(context_text, question, historial_texto)
 
         # El LLM genera la respuesta a traves de la conexion del kernel
         response = await self.kernel.invoke_prompt(prompt)
@@ -69,7 +80,8 @@ class RAGAgent:
         else:
             final_response = response
 
-        # Añadir al historial la respuesta
+        # Añadir al historial la pregunta y la respuesta
+        self.history.add_user_message(question)
         self.history.add_assistant_message(str(final_response))
 
         return str(final_response)

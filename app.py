@@ -33,27 +33,27 @@ files = st.file_uploader(
 )
 
 
-# Indexar archivos subidos y guardarlos
+# Fragmentar texto de archivos subidos y guardarlos
 if files:
     for file in files:
-        chunks = process_document(file)  # lector de documentos
-        st.session_state.store.add_documents(chunks, file.name)
+        chunks = process_document(file)  # extraer texto y fragmentarlo
+        st.session_state.store.add_documents(chunks, file.name)  # insertar en el vector store los documentos
         st.success(f"Archivo almacenado: {file.name}")
 
 
-# Formulario de entrada de chat
+# Ventana de entrada de chat con boton de enviar
 with st.form(key="chat_form", clear_on_submit=True):
     user_input = st.text_input("Pregunte:")  # Ventana para input de chat
-    submitted = st.form_submit_button("Enviar")
+    submitted = st.form_submit_button("Enviar")  # Pulsado boton enviar o enter
 
 
-# Si hay input del usuario
+# Si hay input del usuario y se ha pulsado enter
 if user_input and submitted:
-    results = st.session_state.store.search(user_input)  # devuelve embeddings similares a la pregunta
+    results = st.session_state.store.search(user_input)  # devuelve fragmentos similares a la pregunta
 
     response = asyncio.run(
         st.session_state.agent.ask(results, user_input)
-    )  # pedir al agente que genere la respuesta a partir de la pregunta y la info de los embeddings
+    )  # pedir al agente que genere la respuesta a partir de la pregunta y la info de los fragmentos
 
     # Guardar en el historial del chat
     st.session_state.chat.append(("user", user_input))  # guardar en el historial del chat la pregunta del usuario
