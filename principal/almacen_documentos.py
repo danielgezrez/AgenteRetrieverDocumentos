@@ -19,11 +19,11 @@ class VectorStore:
         :param text: texto
         :return: vector embedding del texto
         """
-        res = client.embeddings.create(
+        emb = client.embeddings.create(
             model=EMBEDDING_MODEL,
             input=text
         )
-        return np.array(res.data[0].embedding, dtype=np.float32)
+        return np.array(emb.data[0].embedding, dtype=np.float32)
 
     def add_documents(self, chunks, doc_name):
         """

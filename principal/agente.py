@@ -4,6 +4,7 @@ from semantic_kernel.contents import ChatHistory
 from principal.config import OPENAI_API_KEY, CHAT_MODEL
 from plugins.summary_plugin import SummaryPlugin
 
+
 # Clase Agente RAG
 class RAGAgent:
     # Constructor
